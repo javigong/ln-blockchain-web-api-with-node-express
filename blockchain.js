@@ -1,4 +1,5 @@
 const sha256 = require("js-sha256");
+const Block = require("./block");
 
 class Blockchain {
   constructor(genesisBlock) {
@@ -15,8 +16,35 @@ class Blockchain {
     this.blocks.push(block);
   }
 
+  getNextBlock(transactions) {
+    let block = new Block();
+    transactions.forEach((transaction) => {
+      block.addTransaction(transaction);
+    });
+
+    let previousBlock = this.getPreviousBlock();
+    block.index = this.blocks.length;
+    block.previousHash = previousBlock.hash;
+    block.hash = this.generateHash(block);
+
+    return block;
+  }
+
+  getPreviousBlock() {
+    return this.blocks[this.blocks.length - 1];
+  }
+
   generateHash(block) {
-    const hash = sha256(block.key);
+    let hash = sha256(block.key);
+
+    // we need to find a hash that starts with 4 zeros
+    // if not increment the nonce until we find it
+    while (!hash.startsWith("0000")) {
+      block.nonce += 1;
+      hash = sha256(block.key);
+      console.log(hash)
+    }
+
     return hash;
   }
 }
