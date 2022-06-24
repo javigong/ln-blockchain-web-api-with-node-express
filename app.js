@@ -8,10 +8,18 @@ const app = express();
 // body parser from JSON
 app.use(express.json());
 
+const arguments = process.argv
+
+let PORT = 8080
+
+if(arguments.length > 2) {
+  PORT = arguments[2]
+}
+
 let transactions = [];
 
 let genesisBlock = new Block();
-let blockchain = new Blockchain(genesisBlock);
+// let blockchain = new Blockchain(genesisBlock);
 
 app.post("/transactions", (req, res) => {
   const to = req.body.to;
@@ -35,6 +43,6 @@ app.get("/blockchain", (req, res) => {
   res.json(blockchain);
 });
 
-app.listen(8080, () => {
-  console.log("Server is running on http://localhost:8080");
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
