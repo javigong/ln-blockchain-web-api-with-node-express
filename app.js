@@ -5,6 +5,22 @@ const Transaction = require("./transaction");
 const express = require("express");
 const app = express();
 
+// body parser from json
+app.use(express.json());
+
+let transactions = [];
+
+app.post("/transactions", (req, res) => {
+  const to = req.body.to;
+  const from = req.body.from;
+  const amount = req.body.amount;
+
+  let transaction = new Transaction(from, to, amount);
+  transactions.push(transaction);
+
+  res.json(transactions);
+});
+
 app.get("/blockchain", (req, res) => {
   let transaction = new Transaction("Mary", "John", 100);
 
@@ -22,7 +38,7 @@ app.get("/blockchain", (req, res) => {
   ]);
   blockchain.addBlock(block1and2);
 
-  res.json(blockchain)
+  res.json(blockchain);
 });
 
 app.listen(8080, () => {
