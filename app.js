@@ -1,6 +1,7 @@
 const Block = require("./block");
 const Blockchain = require("./blockchain");
 const Transaction = require("./transaction");
+const BlockchainNode = require("./blockchainNode");
 
 const express = require("express");
 const app = express();
@@ -8,18 +9,29 @@ const app = express();
 // body parser from JSON
 app.use(express.json());
 
-const arguments = process.argv
+const arguments = process.argv;
 
-let PORT = 8080
+let PORT = 8080;
 
-if(arguments.length > 2) {
-  PORT = arguments[2]
+if (arguments.length > 2) {
+  PORT = arguments[2];
 }
 
 let transactions = [];
+let nodes = [];
 
 let genesisBlock = new Block();
 // let blockchain = new Blockchain(genesisBlock);
+
+app.post("/nodes/register", (req, res) => {
+  const urls = req.body;
+  urls.forEach((url) => {
+    const node = new BlockchainNode(url);
+    nodes.push(node);
+  });
+
+  res.send(nodes);
+});
 
 app.post("/transactions", (req, res) => {
   const to = req.body.to;
@@ -39,7 +51,6 @@ app.get("/mine", (req, res) => {
 });
 
 app.get("/blockchain", (req, res) => {
-
   res.json(blockchain);
 });
 
