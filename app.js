@@ -5,10 +5,13 @@ const Transaction = require("./transaction");
 const express = require("express");
 const app = express();
 
-// body parser from json
+// body parser from JSON
 app.use(express.json());
 
 let transactions = [];
+
+let genesisBlock = new Block();
+let blockchain = new Blockchain(genesisBlock);
 
 app.post("/transactions", (req, res) => {
   const to = req.body.to;
@@ -21,22 +24,13 @@ app.post("/transactions", (req, res) => {
   res.json(transactions);
 });
 
-app.get("/blockchain", (req, res) => {
-  let transaction = new Transaction("Mary", "John", 100);
-
-  let genesisBlock = new Block();
-  let blockchain = new Blockchain(genesisBlock);
-
-  let block = blockchain.getNextBlock([transaction]);
+app.get("/mine", (req, res) => {
+  let block = blockchain.getNextBlock(transactions);
   blockchain.addBlock(block);
+  res.json(block);
+});
 
-  let anotherTransaction1 = new Transaction("Steven", "Brian", 500);
-  let anotherTransaction2 = new Transaction("Javier", "Kelsi", 700);
-  let block1and2 = blockchain.getNextBlock([
-    anotherTransaction1,
-    anotherTransaction2,
-  ]);
-  blockchain.addBlock(block1and2);
+app.get("/blockchain", (req, res) => {
 
   res.json(blockchain);
 });
@@ -44,5 +38,3 @@ app.get("/blockchain", (req, res) => {
 app.listen(8080, () => {
   console.log("Server is running on http://localhost:8080");
 });
-
-// console.log(blockchain);
