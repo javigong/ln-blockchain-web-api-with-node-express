@@ -2,7 +2,7 @@
  
 This is a basic local implementation of the blockchain core engine as an introduction to the main concepts.  
 
-**Main concepts:**
+**Followed steps:**
 
 1. Implement main blockchain models (transaction, block, blockchain)
 2. Initialize the blockchain by generating a genesis block
